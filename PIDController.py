@@ -32,4 +32,25 @@ class PIDController:
         7. Return the clamped output.
         """
         # --- YOUR CODE HERE ---
-        pass
+        self.integral += error * self.dt
+        derivative = (error - self.prev_error) / self.dt
+        prop_control=self.kp * error
+        derivative_control=self.kd * derivative
+        integral_control=self.ki * self.integral
+
+        output = prop_control + integral_control + derivative_control
+        output = min(max(output, self.output_limits[0]), self.output_limits[1])
+        self.prev_error = error
+        return output
+
+    def updateConstants(self):
+        print(f"Current PID constants: Kp={self.kp}, Ki={self.ki}, Kd={self.kd}")
+        #ask student for new constants
+        try:
+            self.kp = float(input("Enter new Kp: "))
+            self.ki = float(input("Enter new Ki: "))
+            self.kd = float(input("Enter new Kd: "))
+        except ValueError:
+            print("Invalid input. Keeping previous constants.")
+        
+        return

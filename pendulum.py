@@ -12,25 +12,26 @@ RENDER_MODE = "human"
 env = gym.make('Pendulum-v1', render_mode=RENDER_MODE)
 
 # Uncomment to disabled gravity as requested
-# env.unwrapped.g = 0.0 
+env.unwrapped.g = 0.0 
 
-pid = PIDController(kp=0.0, ki=0.0, kd=0.0)
+# pid = PIDController(kp=15.0, ki=2.5, kd=2)
+pid = PIDController(kp=6.5, ki=0, kd=0.9)  
+
 
 states, actions = [], []
 state, _ = env.reset()
 
-target = 2
+target = 0  # works for 0,1.8,1.9
 
 for _ in range(10000):
-
     states.append(state)
     
     # Calculate the current angle (theta) from the state [cos(theta), sin(theta), dot_theta]
     # We want the angle to be 0 (upright).
     current_angle = np.arctan2(state[1], state[0])
     
-    # Error calculation: Target (0) - Current
-    error = -current_angle 
+    # Error calculation: Target (1.5) - Current
+    error = target - current_angle 
     
     # Get control signal from PID
     action = pid.update(error)
@@ -41,6 +42,7 @@ for _ in range(10000):
     
     if terminated or truncated:
         break
+
 
 env.close()
 
@@ -61,7 +63,7 @@ fig, axs = plt.subplots(3, 1, figsize=(10, 12), sharex=True)
 
 # Plot Angle: Shows how close the pendulum gets to 'Upright' (0 rad)
 axs[0].plot(angles, label='Angle (rad)', color='royalblue', linewidth=1.5)
-axs[0].axhline(y=0, color='r', linestyle='--', alpha=0.6, label='Target (Upright)')
+axs[0].axhline(y=target, color='r', linestyle='--', alpha=0.6, label=f'Target ({target} rad)')
 axs[0].set_ylabel('Radians')
 axs[0].set_title('Pendulum State: Angle')
 axs[0].grid(True, alpha=0.3)
