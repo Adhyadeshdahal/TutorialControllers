@@ -1,0 +1,4 @@
+**/dev_*.py
+venv/
+.vscode/
+**/__pycache__/
