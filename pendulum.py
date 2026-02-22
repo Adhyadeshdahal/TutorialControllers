@@ -1,7 +1,7 @@
 import gymnasium as gym
 import numpy as np
 import matplotlib.pyplot as plt
-from dev_PIDController import PIDController
+from PIDController import PIDController
 
 # =================================================================
 # 1. Simulation Execution
